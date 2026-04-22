@@ -136,12 +136,15 @@ class ResultService:
         q1, q2, q3 = statistics.quantiles(marks, n=4)
 
         return {
-            "mean": statistics.mean(marks),
-            "stddev": statistics.pstdev(marks),
-            "min": min(marks),
-            "max": max(marks),
-            "p25": q1,
-            "p50": q2,
-            "p75": q3,
+            "mean": self._round(statistics.mean(marks)),
+            "stddev": self._round(statistics.pstdev(marks)),
+            "min": self._round(min(marks)),
+            "max": self._round(max(marks)),
+            "p25": self._round(q1),
+            "p50": self._round(q2),
+            "p75": self._round(q3),
             "count": len(marks),
         }
+
+    def _round(self, x):
+        return round(x, 1)
