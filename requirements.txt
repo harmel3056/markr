@@ -1,1 +1,4 @@
-FastAPI
+fastapi
+uvicorn
+pydantic
+pydantic-settings
