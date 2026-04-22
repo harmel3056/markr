@@ -133,16 +133,20 @@ class ResultService:
             )
 
         # calculate percentiles as required
-        q1, q2, q3 = statistics.quantiles(marks, n=4)
+        if len(marks) == 1:
+            p25, p50, p75 = marks[0], marks[0], marks[0]
+        else:
+            q1, q2, q3 = statistics.quantiles(marks, n=4)
+            p25, p50, p75 = q1, q2, q3
 
         return {
             "mean": self._round(statistics.mean(marks)),
             "stddev": self._round(statistics.pstdev(marks)),
             "min": self._round(min(marks)),
             "max": self._round(max(marks)),
-            "p25": self._round(q1),
-            "p50": self._round(q2),
-            "p75": self._round(q3),
+            "p25": self._round(p25),
+            "p50": self._round(p50),
+            "p75": self._round(p75),
             "count": len(marks),
         }
 

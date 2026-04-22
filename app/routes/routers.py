@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Header, HTTPException
+from fastapi import APIRouter, Body, Header, HTTPException, Request
 from app.schemas.schemas import AnalyticsResponse
 
 router = APIRouter()
@@ -8,16 +8,16 @@ router.service = None
 
 
 @router.post("/import")
-def import_results(
-    xml_data = Body(..., media_type="application/xml"),
-    content_type = Header(None)
-):
+async def import_results(request: Request):
+    content_type = request.headers.get("content-type", "")
+
     if content_type != "text/xml+markr":
         raise HTTPException(
             status_code=400,
             detail="Content-Type must be text/xml+markr"
         )
 
+    xml_data = await request.body()
     router.service.process_results_and_save(xml_data)
     return {"status": "ok"}
 
