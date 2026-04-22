@@ -38,7 +38,7 @@ class ResultService:
 
         # resolve any duplicate entries, only reached if all valid
         for result in results:
-            self._handle_existing_entries(result)
+            self._save_with_duplicate_resolution(result)
 
         return results
 
@@ -94,7 +94,7 @@ class ResultService:
         }
 
 
-    def _handle_existing_entries(self, new_result):
+    def _save_with_duplicate_resolution(self, new_result):
         existing = self.repo.get_by_student_and_test(
             new_result.student_number,
             new_result.test_id
