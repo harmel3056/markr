@@ -47,23 +47,25 @@ class ResultService:
         # parse incoming data
         try:
             root = ET.fromstring(xml_data)
-        except ET.ParseError:
-            raise InvalidXMLFormatError()
+        except ET.ParseError as e:
+            raise InvalidXMLFormatError(f"Malformed XML: {e}")
 
         # check for required root tag
         if root.tag != "mcq-test-results":
-            raise InvalidRootTagError()
+            raise InvalidRootTagError(
+                f"Expected root tag <mcq-test-results> but got <{root.tag}>"
+            )
 
         # extract required fields only
         result_elements = root.findall("mcq-test-result")
         if not result_elements:
-            raise MissingRequiredFieldError()
+            raise MissingRequiredFieldError("No <mcq-test-result> elements found in XML")
         
         raw_results = []
         for element in result_elements:
             summary = element.find("summary-marks")
             if summary is None:
-                raise MissingRequiredFieldError()
+                raise MissingRequiredFieldError("Required field <summary-marks> is missing")
 
             required = {
                 "student_number": element.findtext("student-number"),
@@ -74,7 +76,9 @@ class ResultService:
 
             for key, value in required.items():
                 if value is None:
-                    raise MissingRequiredFieldError()
+                    raise MissingRequiredFieldError(
+                        f"Required field '{key}' is missing"
+                    )
 
             raw_results.append(required)
         
@@ -124,7 +128,9 @@ class ResultService:
             marks.append(result.percentage())
 
         if not marks:
-            raise TestNotFoundError()
+            raise TestNotFoundError(
+                f"No results found for test_id '{test_id}'"
+            )
 
         # calculate percentiles as required
         q1, q2, q3 = statistics.quantiles(marks, n=4)
