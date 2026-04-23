@@ -33,11 +33,30 @@ curl -X POST \
 curl http://localhost:4567/results/9863/aggregate
 ```
 
-### Run the test suite locally
+## Running the test suite locally
 
-```bash
-python -m pytest app/tests/unit_tests.py -v
-```
+Tests are designed to run **outside** Docker.
+
+From the project root:
+
+1. Create and activate a virtual environment:
+    
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+    
+2. Install dependencies:
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+3. Run the tests:
+    
+    ```bash
+    python -m pytest app/tests/unit_tests.py -v
+    ```
 
 ### API docs
 
